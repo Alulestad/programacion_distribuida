@@ -1,6 +1,5 @@
 package com.programacion.distribuida.config;
 
-import com.programacion.distribuida.db.Persona;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -11,17 +10,15 @@ import jakarta.persistence.Persistence;
 @ApplicationScoped
 public class JpaConfig {
 
-    public EntityManagerFactory emf;
+    EntityManagerFactory emf;
 
     @PostConstruct
     public void init(){
-
         emf= Persistence.createEntityManagerFactory("pu-distribuida");
-
     }
 
     @Produces
-    public EntityManager em(){
+    public EntityManager entityManagerFactory(){
         return emf.createEntityManager();
     }
 
