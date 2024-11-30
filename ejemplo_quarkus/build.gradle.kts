@@ -36,7 +36,16 @@ dependencies {
     //rest
     implementation("io.quarkus:quarkus-rest")
     implementation("io.quarkus:quarkus-rest-jsonb")
-    implementation("io.quarkus:quarkus-hibernate-orm")
+
+    //JPA
+    //implementation("io.quarkus:quarkus-hibernate-orm")
+    implementation("io.quarkus:quarkus-hibernate-orm-panache")
+    implementation("io.quarkus:quarkus-jdbc-postgresql")
+
+    //Driver
+    implementation("org.postgresql:postgresql:42.7.4")
+
+
 
     /*
     testImplementation("io.quarkus:quarkus-junit5")*/
@@ -47,6 +56,7 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+
 
 
 }
