@@ -1,13 +1,17 @@
 package com.programacion.distribuida.rest;
 
 import com.programacion.distribuida.db.Book;
+import com.programacion.distribuida.dto.AuthorDto;
+import com.programacion.distribuida.dto.BookDto;
 import com.programacion.distribuida.repo.BookRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.List;
 
@@ -20,9 +24,39 @@ public class BookRest {
     @Inject
     BookRepository repository;
 
+    @Inject
+    @ConfigProperty(name="authors.server")
+    String authorsServer;
+
     @GET
-    public List<Book> findAll() {
-        return repository.findAll().list();
+    public List<BookDto> findAll() {
+        //--version-1 -->original
+        //return repository.findAll().list();
+
+        //version-2-->JAX-RS Client
+        var client= ClientBuilder.newClient();
+
+
+        return repository.streamAll()
+                .map(book->{
+                    //localhost:9090/authors/{id}
+            System.out.println("Buscando author con id= " + book.getIdAutor());
+
+            var author= client.target(authorsServer)
+                    .path("/authors/{id}")
+                    .resolveTemplate("id",book.getIdAutor())
+                    .request(MediaType.APPLICATION_JSON)
+                    .get(AuthorDto.class);
+            var dto = new BookDto();
+            dto.setId(book.getId());
+            dto.setIsbn(book.getIsbn());
+            dto.setTitle(book.getTitle());
+            dto.setPrice(book.getPrice());
+            dto.setAutorName(author.getFirstName()+" "+author.getLastName());
+
+            return dto;
+        }).toList();
+        //version-3-->
     }
 
     @GET

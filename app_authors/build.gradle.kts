@@ -36,6 +36,8 @@ dependencies {
     //rest
     implementation("io.quarkus:quarkus-rest")
     implementation("io.quarkus:quarkus-rest-jsonb")
+    implementation("io.quarkus:quarkus-rest-client")
+    implementation("io.quarkus:quarkus-rest-client-jsonb")
 
     //JPA
     //implementation("io.quarkus:quarkus-hibernate-orm")
