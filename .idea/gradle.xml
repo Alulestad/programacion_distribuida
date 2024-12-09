@@ -10,6 +10,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app_authors" />
+            <option value="$PROJECT_DIR$/app_books" />
             <option value="$PROJECT_DIR$/ejemplo01_CDI" />
             <option value="$PROJECT_DIR$/ejemplo_jpa" />
             <option value="$PROJECT_DIR$/ejemplo_quarkus" />
