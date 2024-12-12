@@ -1,5 +1,6 @@
 package com.programacion.distribuida.rest;
 
+import com.programacion.distribuida.clients.AuthorRestClient;
 import com.programacion.distribuida.db.Book;
 import com.programacion.distribuida.dto.AuthorDto;
 import com.programacion.distribuida.dto.BookDto;
@@ -12,6 +13,8 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
 
@@ -24,9 +27,14 @@ public class BookRest {
     @Inject
     BookRepository repository;
 
-    @Inject
+    //para version 3
+    /*@Inject
     @ConfigProperty(name="authors.server")
-    String authorsServer;
+    String authorsServer;*/
+    @Inject
+    @RestClient
+    AuthorRestClient client;
+
 
     @GET
     public List<BookDto> findAll() {
@@ -34,7 +42,7 @@ public class BookRest {
         //return repository.findAll().list();
 
         //version-2-->JAX-RS Client
-        var client= ClientBuilder.newClient();
+        /*var client= ClientBuilder.newClient();
 
 
         return repository.streamAll()
@@ -55,9 +63,48 @@ public class BookRest {
             dto.setAutorName(author.getFirstName()+" "+author.getLastName());
 
             return dto;
-        }).toList();
-        //version-3-->
+        }).toList();*/
+        //version-3--> MP client manual
+        /*AuthorRestClient client= RestClientBuilder.newBuilder()
+                .baseUri(authorsServer)
+                .build(AuthorRestClient.class);
+
+        return repository.streamAll()
+                .map(book->{
+                    //localhost:9090/authors/{id}
+                    System.out.println("Buscando author con id= " + book.getIdAutor());
+
+                    var author= client.findById(book.getIdAutor());
+                    var dto = new BookDto();
+                    dto.setId(book.getId());
+                    dto.setIsbn(book.getIsbn());
+                    dto.setTitle(book.getTitle());
+                    dto.setPrice(book.getPrice());
+                    dto.setAutorName(author.getFirstName()+" "+author.getLastName());
+
+                    return dto;
+                }).toList();*/
+        //obs. quitar el @RegisterRestClient(configKey = "authors-mpi")
+
+        //version-4--> MP client automatica
+
+        return repository.streamAll()
+                .map(book->{
+                    //localhost:9090/authors/{id}
+                    System.out.println("Buscando author con id= " + book.getIdAutor());
+
+                    var author= client.findById(book.getIdAutor());
+                    var dto = new BookDto();
+                    dto.setId(book.getId());
+                    dto.setIsbn(book.getIsbn());
+                    dto.setTitle(book.getTitle());
+                    dto.setPrice(book.getPrice());
+                    dto.setAutorName(author.getFirstName()+" "+author.getLastName());
+
+                    return dto;
+                }).toList();
     }
+
 
     @GET
     @Path("/{id}")
