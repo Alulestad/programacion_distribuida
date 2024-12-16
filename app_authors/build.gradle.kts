@@ -39,6 +39,8 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-client")
     implementation("io.quarkus:quarkus-rest-client-jsonb")
 
+    //implementation("io.smallrye.stork:stork-service-discovery-static-list")
+
     //JPA
     //implementation("io.quarkus:quarkus-hibernate-orm")
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
@@ -58,6 +60,12 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+
+    //Registro este es para registrar
+    implementation("io.smallrye.reactive:smallrye-mutiny-vertx-consul-client")
+
+    //Discovery es para buscar las cosas ahi
+    implementation("io.smallrye.stork:stork-service-discovery-consul")
 
 
 
