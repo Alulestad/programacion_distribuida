@@ -10,6 +10,10 @@ import java.awt.*;
 public class Main {
     public static void main(String[] args) {
         try {
+            // 1. Inicializamos el contenedor CDI.
+            // `SeContainerInitializer` es una clase estática proporcionada por CDI en Java SE.
+            // `newInstance()` crea una instancia del inicializador CDI.
+            // `initialize()` arranca el contenedor CDI, que detectará los beans definidos en el proyecto.
             SeContainer container= SeContainerInitializer
                     .newInstance()
                     .initialize();

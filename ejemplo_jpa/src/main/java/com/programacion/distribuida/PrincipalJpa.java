@@ -13,7 +13,6 @@ import java.util.List;
 public class PrincipalJpa {
 
 
-
     public static void main(String[] args) {
         EntityManagerFactory emf =
                 Persistence.createEntityManagerFactory("pu-distribuida");
