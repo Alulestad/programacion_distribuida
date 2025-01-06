@@ -1,0 +1,36 @@
+server:
+  port: 9091
+
+
+spring:
+  application:
+    name: app_authors_spring
+    instance-id: "instancia-1"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/examen1_distribuida
+    username: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false # Opcional: desactiva consultas en vistas
+
+  cloud:
+    consul:
+      host: localhost # Dirección IP del servidor Consul
+      port: 8500
+      discovery:
+        enabled: true
+        register: true
+        prefer-ip-address: true
+        service-name: ${spring.application.name}
+    loadbalancer:
+      retry:
+        enabled: true # Habilitar reintentos en balanceador de carga
+
+# Otras configuraciones pueden añadirse según necesidad

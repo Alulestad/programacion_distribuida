@@ -1,0 +1,21 @@
+http:
+    routers:
+        router-app-books:
+            entryPoints:
+                - http
+            rule: PathPrefix(`/app-authors`)
+            service: service-app-authors
+            middlewares:
+               - middleware-authors
+    services:
+        service-app-authors:
+            loadBalancer:
+                servers:
+                    - url: "http://127.0.0.1:9090"
+                    - url: "http://127.0.0.1:9091"
+                    
+    middlewares:
+        middleware-authors:
+            stripPrefix:
+                prefixes:
+                    - "/app-authors"

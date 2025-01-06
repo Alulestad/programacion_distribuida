@@ -1,0 +1,43 @@
+http:
+    routers:
+        router-app-authors:
+            entryPoints:
+                - http
+            rule: PathPrefix(`/app-authors`)
+            service: service-app-authors
+            middlewares:
+                - middleware-authors
+
+        router-app-books:
+            entryPoints:
+                - http
+            rule: PathPrefix(`/app-books`)
+            service: service-app-books
+            middlewares:
+                - middleware-books
+
+    services:
+        service-app-authors:
+            loadBalancer:
+                servers:
+                    - url: "http://127.0.0.1:9090"
+                    - url: "http://127.0.0.1:9091"
+
+        service-app-books:
+            loadBalancer:
+                servers:
+                    - url: "http://127.0.0.1:8080"
+
+    middlewares:
+        middleware-authors:
+            stripPrefix:
+                prefixes:
+                    - "/app-authors"
+        #            replacePathRegex:
+        #                regex: "^/app-authors(.*)"
+        #                replacement: "/authors$1"
+
+        middleware-books:
+            stripPrefix:
+                prefixes:
+                    - "/app-books"

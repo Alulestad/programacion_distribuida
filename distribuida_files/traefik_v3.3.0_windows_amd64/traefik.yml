@@ -1,0 +1,13 @@
+api:
+    insecure: true
+    dashboard: true
+entryPoints:
+    http:
+        address: ":80"
+    traefik:
+        address: ":7070"
+providers:
+    file:
+        filename: app-static.yml
+        watch: true
+            
