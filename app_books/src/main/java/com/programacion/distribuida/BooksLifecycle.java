@@ -2,6 +2,7 @@ package com.programacion.distribuida;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
+import io.vertx.ext.consul.CheckOptions;
 import io.vertx.ext.consul.ConsulClientOptions;
 import io.vertx.ext.consul.ServiceOptions;
 import io.vertx.mutiny.core.Vertx;
@@ -12,6 +13,7 @@ import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.net.InetAddress;
+import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -47,6 +49,20 @@ public class BooksLifecycle { //Para el servicio OJO esto se añadio luego
                         .setId(serviceId)
                         .setAddress(ipAdress.getHostAddress())
                         .setPort(appPort)
+                        .setTags(List.of(
+                                "traefik.enable=true",
+                                "traefik.http.routers.routers-app-books.rule=PathPrefix(`/app-books`)",
+                                "traefik.http.routers.routers-app-books.middlewares=middleware-books",
+                                "traefik.http.middlewares.middleware-books.stripPrefix.prefixes=/app-books"
+                                )
+                        )
+                        .setCheckOptions(
+                                new CheckOptions()
+                                        //http://10.20.1.45:8080/q/health/live
+                                        .setHttp("http://"+ipAdress.getHostAddress()+":"+appPort+"/q/health/live")
+                                        .setInterval("5s")
+                                        .setDeregisterAfter("10s")
+                        )
 
         );
 

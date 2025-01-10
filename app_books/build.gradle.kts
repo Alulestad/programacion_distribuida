@@ -70,6 +70,9 @@ dependencies {
     //consul
     implementation("io.smallrye.stork:stork-service-discovery-consul")
 
+    //health
+    implementation("io.quarkus:quarkus-smallrye-health")
+
 
 
 }

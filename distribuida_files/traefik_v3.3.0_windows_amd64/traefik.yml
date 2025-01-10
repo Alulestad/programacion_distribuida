@@ -7,7 +7,12 @@ entryPoints:
     traefik:
         address: ":7070"
 providers:
-    file:
-        filename: app-static.yml
-        watch: true
-            
+#    file:
+#        filename: app-static.yml
+#        watch: true
+    consulCatalog:
+        refreshInterval: 20s
+        exposedByDefault: true
+        #false
+        endpoint:
+            address: 127.0.0.1:8500

@@ -1,8 +1,12 @@
 ### Ejecuciones
-java -jar -Dquarkus.http.port=9090 quarkus-run.jar
+##Quarkus
+```shell
 
+java -jar -Dquarkus.http.port=9090 quarkus-run.jar
+```
 ### Consul
 ```shell
+cd 
 consul agent -dev
 ```
 http://localhost:8500/ui/dc1/services

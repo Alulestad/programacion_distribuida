@@ -91,9 +91,30 @@ public class BookRest {
         return repository.streamAll()
                 .map(book->{
                     //localhost:9090/authors/{id}
+                    //System.out.println("Buscando author con id= " + book.getIdAutor());
+
+                    //var author= client.findById(book.getIdAutor());
+                    var dto = new BookDto();
+                    dto.setId(book.getId());
+                    dto.setIsbn(book.getIsbn());
+                    dto.setTitle(book.getTitle());
+                    dto.setPrice(book.getPrice());
+                    //dto.setAutorName(author.getFirstName()+" "+author.getLastName());
+
+                    return dto;
+                }).toList();
+    }
+
+    @GET
+    @Path("/todos")
+    public List<BookDto> findAllBasic() {
+        return repository.streamAll()
+                .map(book->{
+                    //localhost:9090/authors/{id}
                     System.out.println("Buscando author con id= " + book.getIdAutor());
 
                     var author= client.findById(book.getIdAutor());
+                    System.out.println(">>>>>au: "+author);
                     var dto = new BookDto();
                     dto.setId(book.getId());
                     dto.setIsbn(book.getIsbn());

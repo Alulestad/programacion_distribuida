@@ -2,6 +2,7 @@ package com.programacion.distribuida;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
+import io.vertx.ext.consul.CheckOptions;
 import io.vertx.ext.consul.ServiceOptions;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.consul.ConsulClient; //multi
@@ -13,6 +14,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -48,6 +50,20 @@ public class AuthorsLifecycle {
                         .setId(serviceId)
                         .setAddress(ipAdress.getHostAddress())
                         .setPort(appPort)
+                        .setTags(List.of(
+                                        "traefik.enable=true",
+                                        "traefik.http.routers.routers-app-authors.rule=PathPrefix(`/app-authors`)",
+                                        "traefik.http.routers.routers-app-authors.middlewares=middleware-authors",
+                                        "traefik.http.middlewares.middleware-authors.stripPrefix.prefixes=/app-authors"
+                                )
+                        )
+                        .setCheckOptions(
+                                new CheckOptions()
+                                        //http://10.20.1.45:8080/q/health/live
+                                        .setHttp("http://"+ipAdress.getHostAddress()+":"+appPort+"/q/health/live")
+                                        .setInterval("5s")
+                                        .setDeregisterAfter("10s")
+                        )
 
         );
 

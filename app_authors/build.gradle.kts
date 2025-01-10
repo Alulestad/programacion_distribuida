@@ -67,7 +67,8 @@ dependencies {
     //Discovery es para buscar las cosas ahi
     implementation("io.smallrye.stork:stork-service-discovery-consul")
 
-
+    //Health
+    implementation("io.quarkus:quarkus-smallrye-health")
 
 }
 
