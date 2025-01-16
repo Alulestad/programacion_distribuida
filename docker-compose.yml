@@ -1,0 +1,71 @@
+#version: '3.3'
+services:
+  dbserver:
+    image: postgres:17.2-alpine3.21
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: distribuida
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+        - "c:/db-distribuida:/var/lib/postgresql/data"
+    ports:
+      - "54321:5432"
+    expose:
+      - 5432
+  consul:
+    image: consul:1.15.4
+    command: |
+      agent -dev
+      -ui
+      -bind 0.0.0.0
+      -client 0.0.0.0
+    #para todas las interfaces de red
+    #y el cliente
+    ports:
+      - "8500:8500"
+    expose:
+      - 8500
+  proxy:
+    image: traefik:v3.3.1
+    command: |
+      --api.insecure=true
+      --providers.consulCatalog
+      --providers.consulCatalog.exposedByDefault=false
+      --providers.consulCatalog.refreshInterval=5s
+      --providers.consulCatalog.endpoint.address=consul:8500
+    ports:
+      - "8080:8080"
+      - "80:80"
+    expose:
+      - 80
+    depends_on:
+      - consul
+  #Entradas para nuestros servicios
+  authors:
+    image: app-authors:latest
+    environment:
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: 123
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://dbserver:5432/distribuida
+      QUARKUS_HTTP_PORT: 8080
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+    depends_on:
+      - dbserver
+      - consul
+    deploy:
+      replicas: 2
+  books:
+    image: app-books:latest
+    environment:
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: 123
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://dbserver:5432/distribuida
+      QUARKUS_HTTP_PORT: 8080
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+    depends_on:
+      - dbserver
+      - consul
+      - authors
