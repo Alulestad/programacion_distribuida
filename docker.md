@@ -47,3 +47,12 @@ docker run --name app-authors -p 9090:9090 -e QUARKUS_DATASOURCE_USERNAME=postgr
  #esto crea una red con el mismo gateway, consul etc. el d como q es opcional
  # el d permite ejecutarlo en segundo plano
 ```
+
+### docker hub
+
+docker build -t alulest/app-authors .
+docker push alulest/app-authors
+
+
+docker build -t alulest/app-books .
+docker push alulest/app-books
