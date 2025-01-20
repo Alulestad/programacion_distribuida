@@ -73,6 +73,10 @@ dependencies {
     //health
     implementation("io.quarkus:quarkus-smallrye-health")
 
+    //Metrics: Prometheus and micrometer
+    implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
+    implementation("io.quarkus:quarkus-jackson")
+
 
 
 }

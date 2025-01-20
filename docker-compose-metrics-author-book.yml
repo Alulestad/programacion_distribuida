@@ -9,8 +9,8 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - "c:/db-distribuida:/var/lib/postgresql/data"
-    ports:
-      - "54321:5432"
+#    ports:
+#      - "54321:5432"
     expose:
       - 5432
     #deploy:
@@ -51,8 +51,8 @@ services:
       - consul
   #Entradas para nuestros servicios
   authors:
-    #image: app-authors:latest
-    image: alulest/app-authors:latest
+    image: app-authors:latest
+    #image: alulest/app-authors:latest
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rapp-authors.rule=PathPrefix(`/app-authors1`)"
@@ -66,12 +66,13 @@ services:
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
     expose:
-      - 80
+      - 8080
     depends_on:
       - dbserver
       - consul
     deploy:
-      replicas: 2
+      replicas: 1
+
   books:
     image: app-books:latest
     #image: alulest/app-books:latest
@@ -93,5 +94,34 @@ services:
       - dbserver
       - consul
       - authors
-#  nginx:
-#    image: nginx:latest
+    deploy:
+      replicas: 1
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./configs:/etc/prometheus
+    ports:
+      - "9090:9090"
+    expose:
+      - 9090
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+
+  postgresql-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_URI: "dbserver:5432/distribuida?sslmode=disable"
+      DATA_SOURCE_USER: postgres
+      DATA_SOURCE_PASS: 123
+    expose:
+      - 9187
+
+

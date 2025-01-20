@@ -44,6 +44,7 @@ docker run --name app-authors -p 9090:9090 -e QUARKUS_DATASOURCE_USERNAME=postgr
 
  docker compose up 
  docker compose up -d
+ docker compose -f docker-compose-metrics-author.yml up
  #esto crea una red con el mismo gateway, consul etc. el d como q es opcional
  # el d permite ejecutarlo en segundo plano
 ```
