@@ -1,0 +1,151 @@
+#version: '3.3'
+services:
+  dbserver:
+    image: postgres:17.2-alpine3.21
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: distribuida
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - "c:/db-distribuida:/var/lib/postgresql/data"
+#    ports:
+#      - "54321:5432"
+    expose:
+      - 5432
+    #deploy:
+    #  replicas: 2
+  consul:
+    image: consul:1.15.4
+    command: |
+      agent -dev
+      -ui
+      -bind 0.0.0.0
+      -client 0.0.0.0
+    #para todas las interfaces de red
+    #y el cliente
+    ports:
+      - "8500:8500"
+    expose:
+      - 8500
+#  proxy:
+#    image: traefik:v3.3.1
+#    command: |
+#      --api.insecure=true
+#      --providers.consulCatalog
+#      --providers.consulCatalog.exposedByDefault=false
+#      --providers.consulCatalog.refreshInterval=5s
+#      --providers.consulCatalog.endpoint.address=consul:8500
+#      --providers.docker
+#    #  --providers.docker.exposedByDefault=false
+#    # la base de datos no debe ser publica, y los servivios de authores tampoco
+#    # necesito que sea publico. por el momento lo voy a poner comentado.
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    ports:
+#      - "8080:8080"
+#      - "80:80"
+#    expose:
+#      - 80
+#    depends_on:
+#      - consul
+  #Entradas para nuestros servicios
+
+  proxy:
+    image: traefik:v3.3.1
+    command:
+      --api.insecure=true
+      --providers.consulCatalog
+      --providers.consulCatalog.exposedByDefault=false
+      --providers.consulCatalog.refreshInterval=5s
+      --providers.consulCatalog.endpoint.address=consul:8500
+      --providers.docker
+      --providers.docker.exposedByDefault=false
+      --entryPoints.metrics.address=":8082"
+      --entryPoints.http.address=":80"
+      --metrics.prometheus=true
+      --metrics.prometheus.entryPoint=metrics
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+#      - "8082:8082"
+      - "80:80"
+    expose:
+      - 80
+    depends_on:
+      - consul
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./configs:/etc/prometheus
+    ports:
+      - "9090:9090"
+    expose:
+      - 9090
+  grafana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+  #  postgresql-exporter:
+  #    image: prometheuscommunity/postgres-exporter:latest
+  #    ports:
+  #      - "9187:9187"
+  #    environment:
+  #      DATA_SOURCE_URI: "dbserver:5432/distribuida?sslmode=disable"
+  #      DATA_SOURCE_USER: postgres
+  #      DATA_SOURCE_PASS: 123
+  #    expose:
+  #      - 9187
+  authors:
+    image: app-authors:latest
+    #image: alulest/app-authors:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rapp-authors.rule=PathPrefix(`/app-authors1`)"
+      - "traefik.http.routers.rapp-authors.middlewares=mauthors"
+      - "traefik.http.middlewares.mauthors.stripPrefix.prefixes=/app-authors1"
+    environment:
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: 123
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://dbserver:5432/distribuida
+      QUARKUS_HTTP_PORT: 8080
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+    expose:
+      - 8080
+    depends_on:
+      - dbserver
+      - consul
+    deploy:
+      replicas: 3
+  books:
+    image: app-books:latest
+    #image: alulest/app-books:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rapp-books.rule=PathPrefix(`/app-books1`)"
+      - "traefik.http.routers.rapp-books.middlewares=mbooks"
+      - "traefik.http.middlewares.mbooks.stripPrefix.prefixes=/app-books1"
+    environment:
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: 123
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://dbserver:5432/distribuida
+      QUARKUS_HTTP_PORT: 8080
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+    expose:
+      - 8080
+    depends_on:
+      - dbserver
+      - consul
+      - authors
+    deploy:
+      replicas: 2
+
+
+
+
+
