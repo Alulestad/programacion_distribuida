@@ -27,13 +27,15 @@ public interface AuthorRestClient {
     @Fallback(fallbackMethod = "findByIdFallback")
     Response findByIdError(@PathParam("id") Integer id) ;
 
-    default AuthorDto findByIdFallback(Integer id){
-        AuthorDto ret= new AuthorDto();
-
+    default Response findByIdFallback(Integer id) {
+        AuthorDto ret = new AuthorDto();
         ret.setId(-1);
         ret.setFirstName("noname");
         ret.setLastName("");
-        return ret;
+
+        return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                .entity(ret)
+                .build();
     }
 
 
