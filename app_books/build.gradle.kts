@@ -77,8 +77,13 @@ dependencies {
     implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
     implementation("io.quarkus:quarkus-jackson")
 
-    //Trasas
+    //Tracing
     implementation("io.quarkus:quarkus-opentelemetry")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-jdbc")
+
+
+    //Fault Tolerance
+    implementation("io.quarkus:quarkus-smallrye-fault-tolerance")
 
 
 }

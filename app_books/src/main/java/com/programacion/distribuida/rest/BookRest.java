@@ -112,9 +112,32 @@ public class BookRest {
                 .map(book->{
                     //localhost:9090/authors/{id}
                     System.out.println("Buscando author con id= " + book.getIdAutor());
+                    //System.out.println("client: " + client.toString());
+                    Response authorResponce = client.findById(book.getIdAutor());
+                    AuthorDto author = authorResponce.readEntity(AuthorDto.class);
+                    System.out.println(">>>>>> au: "+author);
+                    var dto = new BookDto();
+                    dto.setId(book.getId());
+                    dto.setIsbn(book.getIsbn());
+                    dto.setTitle(book.getTitle());
+                    dto.setPrice(book.getPrice());
+                    dto.setAutorName(author.getFirstName()+" "+author.getLastName());
 
-                    var author= client.findById(book.getIdAutor());
-                    System.out.println(">>>>>au: "+author);
+                    return dto;
+                }).toList();
+    }
+
+    @GET
+    @Path("/todosError")
+    public List<BookDto> findAllError() {
+        return repository.streamAll()
+                .map(book->{
+                    //localhost:9090/authors/{id}
+                    System.out.println("Buscando author con id= " + book.getIdAutor());
+                    //System.out.println("client: " + client.toString());
+                    Response authorResponce= client.findByIdError(book.getIdAutor());
+                    AuthorDto author= authorResponce.readEntity(AuthorDto.class);
+                    System.out.println(">>>>> au: "+author);
                     var dto = new BookDto();
                     dto.setId(book.getId());
                     dto.setIsbn(book.getIsbn());
@@ -137,6 +160,31 @@ public class BookRest {
         }
 
         return Response.ok(obj.get()).build();
+    }
+
+    @GET
+    @Path("/error/{id}")
+    public Response findByIdError(@PathParam("id") Integer id) {
+        var obj = repository.findByIdOptional(id);
+
+        if(obj.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        var libro=obj.get();
+
+        Response authorResponce= client.findByIdError(libro.getIdAutor());
+        AuthorDto author= authorResponce.readEntity(AuthorDto.class);
+
+        var dto = new BookDto();
+        dto.setId(libro.getId());
+        dto.setAutorName(author.getFirstName().concat(" ").concat(author.getLastName()));
+        dto.setIsbn(libro.getIsbn());
+        dto.setPrice(libro.getPrice());
+        dto.setTitle(libro.getTitle());
+
+
+        return Response.ok(dto).build();
     }
 
     @POST
