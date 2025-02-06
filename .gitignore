@@ -44,5 +44,7 @@ bin/
 ### Excepciones para los ejecutables ###
 /distribuida_files/traefik_v3.3.0_windows_amd64/traefik.exe
 /distribuida_files/consul_1.20.1_windows_amd64/consul.exe
+
 /distribuida_files/minikube/minikube-windows-amd64.exe
+/distribuida_files/octant_0.25.1_Windows-64bit/octant.exe
 
