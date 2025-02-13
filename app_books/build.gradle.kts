@@ -80,7 +80,8 @@ dependencies {
 
     //Tracing
     //DESCOMENTAR
-//    implementation("io.quarselemetry.instrumentation:opentelemetry-jdbc")
+//    implementation("io.quarkus:quarkus-opentelemetry")
+//    implementation("io.opentelemetry.instrumentation:opentelemetry-jdbc")
 
 
     //Fault Tolerance

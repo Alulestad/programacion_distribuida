@@ -19,7 +19,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: app-books # Nombre del contenedor
-        image: app-authors # Imagen del contenedor puede ser con dockerhub o con un registry privado
+        image: docker.io/alulest/app-books:latest # Imagen del contenedor puede ser con dockerhub o con un registry privado
         #image: docker.io/dbllumiquinga/app-authors:latest
         imagePullPolicy: IfNotPresent
         ports:
@@ -27,17 +27,17 @@ spec:
           protocol: TCP
         env:
           - name: QUARKUS_DATASOURCE_JDBC_URL
-            value: jdbc:postgresql://dbllumiquinga.postgres.database.azure.com:5432/distribuida
+            value: jdbc:postgresql://dbllumiquinga.postgres.database.azure.com:5432/postgres
           - name: QUARKUS_DATASOURCE_USERNAME
-            value: postgres
+            value: distribuida
           - name: QUARKUS_DATASOURCE_PASSWORD
-            value: "VLAD753."
-          - name: CONSUL_HOST
-            value: consul
-          - name: QUARKUS_PORT
-            value: "8500"
+            value: VLAD753.
           - name: QUARKUS_HTTP_PORT
             value: "8080"
+          - name: CONSUL_HOST
+            value: consul
+          - name: CONSUL_PORT
+            value: "8500"
 
 
 #------- balanceo
