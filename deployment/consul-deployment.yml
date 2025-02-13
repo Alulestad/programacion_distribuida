@@ -1,0 +1,47 @@
+# kubectl apply -f app-consul-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consul # Nombre del deployment
+  labels:
+    app: consul
+spec:
+  replicas: 1 # Número de replicas
+  selector:
+    matchLabels:
+      app: consul # Nombre del deployment en este caso el nombre de la app
+  template:
+    metadata:
+#      name: consul
+      labels:
+        app: consul # Nombre del deployment en este caso el nombre de la app
+    spec:
+      containers:
+      - name: consul # Nombre del contenedor
+        image: consul:1.15.4
+#        command: ["agent", "-dev", "-ui", "-bind 0.0.0.0","-client 0.0.0.0"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8500 # Puerto del contenedor
+          protocol: TCP
+#        restartPolicy: Always
+#Kubernetes maneja automáticamente
+#las políticas de reinicio para los Pods creados a partir de un Deployment
+#poe eso no hace falt aponer el restr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consul # Nombre del servicio
+  labels:
+    app: consul
+spec:
+  selector:
+    app: consul
+  type: NodePort
+  ports:
+    - name: consul
+      port: 8500
+      protocol: TCP
+#      targetPort: 8500
+#      nodePort: 30085  # Asegúrate de que esté en el rango permitido

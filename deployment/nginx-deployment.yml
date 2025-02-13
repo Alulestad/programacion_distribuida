@@ -1,0 +1,38 @@
+# kubectl apply -f nginx-deployment.yml
+# kubectl apply -f nginx-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment # Nombre del deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 4 # Número de replicas
+  selector:
+    matchLabels:
+      app: nginx # Nombre del deployment en este caso el nombre de la app
+  template:
+    metadata:
+      labels:
+        app: nginx # Nombre del deployment en este caso el nombre de la app
+    spec:
+      containers:
+      - name: nginx # Nombre del contenedor
+        image: nginx:1.14.2 # Imagen del contenedor puede ser con dockerhub o con un registry privado
+        ports:
+        - containerPort: 80 # Puerto del contenedor
+#------- balanceo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service # Nombre del servicio
+spec:
+    type: ClusterIP
+    #type: LoadBalancer # en caso de usar por ejemplo azure
+    selector:
+        app: nginx
+    ports:
+    - protocol: TCP
+      port: 8080 #este es el puerto en la maquina
+      targetPort: 80 #este en los pots

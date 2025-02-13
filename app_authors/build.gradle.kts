@@ -71,16 +71,22 @@ dependencies {
     implementation("io.quarkus:quarkus-smallrye-health")
 
     //Metrics: Prometheus and micrometer
-    implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
-    implementation("io.quarkus:quarkus-jackson")
+    // DESCOOMENTAR
+//    implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
+//    implementation("io.quarkus:quarkus-jackson")
 
     //Tracing
-    implementation("io.quarkus:quarkus-opentelemetry")
-    implementation("io.opentelemetry.instrumentation:opentelemetry-jdbc")
+    // DESCOEMNTAR
+//    implementation("io.quarkus:quarkus-opentelemetry")
+//    implementation("io.opentelemetry.instrumentation:opentelemetry-jdbc")
 
 
     //Fault Tolerance
-    //implementation("io.quarkus:quarkus-smallrye-fault-tolerance")
+    implementation("io.quarkus:quarkus-smallrye-fault-tolerance")
+
+    //Control de versiones
+    implementation("io.quarkus:quarkus-flyway")
+    implementation("org.flywaydb:flyway-database-postgresql")
 
 }
 
