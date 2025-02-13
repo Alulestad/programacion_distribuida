@@ -48,7 +48,7 @@ metadata:
   name: app-books-service # Nombre del servicio
 spec:
   type: ClusterIP
-  #type: LoadBalancer # en caso de usar por ejemplo azure
+#  type: LoadBalancer # en caso de usar por ejemplo azure
   selector:
     app: app-books
   ports:

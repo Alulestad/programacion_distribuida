@@ -38,7 +38,9 @@ metadata:
 spec:
   selector:
     app: consul
-  type: NodePort
+#  type: NodePort
+#  type: ClusterIP
+  type: LoadBalancer
   ports:
     - name: consul
       port: 8500

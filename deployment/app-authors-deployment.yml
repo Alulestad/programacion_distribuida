@@ -56,3 +56,16 @@ spec:
     - protocol: TCP
       port: 8080 #este es el puerto en la maquina
       targetPort: 8080 #este en los pots
+
+#      -------------------------------
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: app-authors-service # Nombre del servicio
+#spec:
+#  rules:
+#    - http:
+#        - path: /app-authors
+#          backend:
+#            serviceName: app-authors
+#            servicePort: 8080
