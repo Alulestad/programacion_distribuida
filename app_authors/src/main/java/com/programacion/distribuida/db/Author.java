@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 public class Author {
     @Id
-    @GeneratedValue(generator = "seq_book",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(allocationSize = 1,initialValue = 1,sequenceName = "seq_book", name = "seq_book")
+    @GeneratedValue(generator = "author_id_seq",strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(allocationSize = 1,initialValue = 1,sequenceName = "author_id_seq", name = "author_id_seq")
     private Integer id;
 
     @Column(name = "auth_first_name")

@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 @Data
 public class Book {
     @Id
-    @GeneratedValue(generator = "seq_book",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(allocationSize = 1,initialValue = 1,sequenceName = "seq_book", name = "seq_book")
+    @GeneratedValue(generator = "book_id_seq",strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(allocationSize = 1,initialValue = 1,sequenceName = "book_id_seq", name = "book_id_seq")
     private Integer id;
 
     @Column(name = "book_isbn")
