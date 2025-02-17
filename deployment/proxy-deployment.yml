@@ -1,0 +1,56 @@
+# traefik-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      containers:
+        - name: traefik
+          image: traefik:v3.3.1
+          args:
+            - --api.insecure=true
+            - --providers.consulCatalog
+            - --providers.consulCatalog.exposedByDefault=false
+            - --providers.consulCatalog.refreshInterval=5s
+            - --providers.consulCatalog.endpoint.address=consul:8500
+            - --providers.docker
+          ports:
+            - containerPort: 8080
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+---
+# traefik-service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: traefik
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: admin
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

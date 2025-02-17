@@ -39,8 +39,8 @@ spec:
   selector:
     app: consul
 #  type: NodePort
-#  type: ClusterIP
-  type: LoadBalancer
+  type: ClusterIP
+#  type: LoadBalancer
   ports:
     - name: consul
       port: 8500

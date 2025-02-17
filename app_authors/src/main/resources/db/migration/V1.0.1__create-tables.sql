@@ -1,8 +1,8 @@
 -- Crear la tabla 'authors' si no existe
 CREATE TABLE IF NOT EXISTS author (
     id SERIAL PRIMARY KEY,
-    first_name VARCHAR(64) NOT NULL,
-    last_name VARCHAR(64) NOT NULL
+    auth_first_name VARCHAR(64) NOT NULL,
+    auth_last_name VARCHAR(64) NOT NULL
 );
 
 -- Crear la tabla 'books' si no existe

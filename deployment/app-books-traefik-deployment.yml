@@ -1,0 +1,61 @@
+# authors-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-books
+  labels:
+    app: app-books
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-books
+  template:
+    metadata:
+      labels:
+        app: app-books
+      annotations:
+        traefik.ingress.kubernetes.io/rule-type: PathPrefix
+        traefik.ingress.kubernetes.io/rule: PathPrefix(`/books`)
+    spec:
+      containers:
+        - name: app-books
+          image: alulest/app-books:latest
+          env:
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              #            value: jdbc:postgresql://dbllumiquinga.postgres.database.azure.com:5432/postgres
+              value: jdbc:postgresql://dbllumiquinga-pgserver.postgres.database.azure.com:5432/distribuida
+            - name: QUARKUS_DATASOURCE_USERNAME
+              #            value: distribuida
+              value: distribuida
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              #            value: VLAD753.
+              value: VLAD753.
+            - name: QUARKUS_HTTP_PORT
+              value: "8080"
+            - name: CONSUL_HOST
+              value: consul
+            - name: CONSUL_PORT
+              value: "8500"
+          ports:
+            - containerPort: 8080
+---
+# authors-service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-books-service
+  labels:
+    app: app-books
+  annotations:
+    traefik.ingress.kubernetes.io/rule-type: PathPrefix
+    traefik.ingress.kubernetes.io/rule: PathPrefix(`/books`)
+spec:
+  type: ClusterIP
+  selector:
+    app: app-books
+
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

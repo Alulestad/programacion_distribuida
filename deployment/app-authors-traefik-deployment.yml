@@ -1,0 +1,61 @@
+# authors-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-authors
+  labels:
+    app: app-authors
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-authors
+  template:
+    metadata:
+      labels:
+        app: app-authors
+      annotations:
+        traefik.ingress.kubernetes.io/rule-type: PathPrefix
+        traefik.ingress.kubernetes.io/rule: PathPrefix(`/authors`)
+    spec:
+      containers:
+        - name: app-authors
+          image: alulest/app-authors:latest
+          env:
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              #            value: jdbc:postgresql://dbllumiquinga.postgres.database.azure.com:5432/postgres
+              value: jdbc:postgresql://dbllumiquinga-pgserver.postgres.database.azure.com:5432/distribuida
+            - name: QUARKUS_DATASOURCE_USERNAME
+              #            value: distribuida
+              value: distribuida
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              #            value: VLAD753.
+              value: VLAD753.
+            - name: QUARKUS_HTTP_PORT
+              value: "8080"
+            - name: CONSUL_HOST
+              value: consul
+            - name: CONSUL_PORT
+              value: "8500"
+          ports:
+            - containerPort: 8080
+---
+# authors-service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-authors-service
+  labels:
+    app: app-authors
+  annotations:
+    traefik.ingress.kubernetes.io/rule-type: PathPrefix
+    traefik.ingress.kubernetes.io/rule: PathPrefix(`/authors`)
+spec:
+  type: ClusterIP
+  selector:
+    app: app-authors
+
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

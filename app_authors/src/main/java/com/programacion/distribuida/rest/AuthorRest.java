@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Path("/authors")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+
 @ApplicationScoped
 //@Transactional
 public class AuthorRest {

@@ -23,6 +23,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped
 @Transactional
+
 public class BookRest {
     @Inject
     BookRepository repository;
