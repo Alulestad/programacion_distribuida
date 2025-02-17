@@ -39,11 +39,12 @@ spec:
   selector:
     app: consul
 #  type: NodePort
-#  type: ClusterIP
-  type: LoadBalancer
+  type: ClusterIP
+#  type: LoadBalancer
   ports:
     - name: consul
       port: 8500
       protocol: TCP
+      targetPort: 8500
 #      targetPort: 8500
 #      nodePort: 30085  # Asegúrate de que esté en el rango permitido

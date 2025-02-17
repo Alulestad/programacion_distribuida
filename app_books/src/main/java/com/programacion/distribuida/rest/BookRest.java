@@ -9,17 +9,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
-
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
@@ -29,7 +25,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped
-//@Transactional
+@Transactional
 
 public class BookRest {
     @Inject
@@ -173,7 +169,7 @@ public class BookRest {
     @Operation(summary = "Obtener book", description = "Devuelve un book especofico")
     @APIResponse(responseCode = "200", description = "Obtencion exitoso de book")
     @APIResponse(responseCode = "404", description = "Book no encontrado")
-    public Response findById(
+     public Response findById(
             @Parameter(
                     name = "id",
                     description = "ID del book que se desea obtener.",
@@ -290,7 +286,6 @@ public class BookRest {
     }
 
     @DELETE
-    @Path("/{id}")
     @Operation(summary = "Eliminar un book", description = "Elimina un book existente por su ID.")
     @APIResponse(responseCode = "200", description = "Book eliminado exitosamente")
     @APIResponse(responseCode = "404", description = "Book no encontrado")
@@ -301,6 +296,7 @@ public class BookRest {
             in = ParameterIn.PATH,
             example = "1"
     )
+    @Path("/{id}")
     public Response delete(@PathParam("id") Integer id) {
         var obj = repository.findByIdOptional(id);
         if(obj.isEmpty()) {

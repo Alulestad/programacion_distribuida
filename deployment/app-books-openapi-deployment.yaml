@@ -25,6 +25,8 @@ spec:
         ports:
         - containerPort: 8080 # Puerto del contenedor
           protocol: TCP
+
+
         env:
           - name: QUARKUS_DATASOURCE_JDBC_URL
 #            value: jdbc:postgresql://dbllumiquinga.postgres.database.azure.com:5432/postgres
@@ -41,14 +43,14 @@ spec:
             value: consul
           - name: CONSUL_PORT
             value: "8500"
-          - name: QUARKUS_SMALLRYE_OPENAPI_ENABLE
-            value: "true"
-          - name: QUARKUS_SMALLRYE_OPENAPI_ALWAYS_INCLUDE
-            value: "true"
+#          - name: QUARKUS_SMALLRYE_OPENAPI_ENABLE
+#            value: "true"
+#          - name: QUARKUS_SMALLRYE_OPENAPI_ALWAYS_INCLUDE
+#            value: "true"
           #          - name: QUARKUS_SMALLRYE_OPENAPI_PATH
           #            value: "/q/openapi2"
-          - name: QUARKUS_SWAGGER_UI_ALWAYS_INCLUDE
-            value: "true"
+#          - name: QUARKUS_SWAGGER_UI_ALWAYS_INCLUDE
+#            value: "true"
           #          - name: QUARKUS_SWAGGER_UI_PATH
           #            value: "/swagger-ui"
 

@@ -37,6 +37,8 @@ spec:
               value: consul
             - name: CONSUL_PORT
               value: "8500"
+            - name: QUARKUS_SMALLRYE_OPENAPI_SERVERS
+              value: "/app-authors"
           ports:
             - containerPort: 8080
 ---
