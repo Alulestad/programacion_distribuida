@@ -88,6 +88,21 @@ dependencies {
     implementation("io.quarkus:quarkus-flyway")
     implementation("org.flywaydb:flyway-database-postgresql")
 
+    //########################################### OpenAPI ###########################################
+    //Quarkus REST Jackson
+    implementation("io.quarkus:quarkus-rest-jackson")
+
+    //Quarkus SmallRye OpenAPI
+    implementation("io.quarkus:quarkus-smallrye-openapi")
+//    implementation("io.quarkus:quarkus-swagger-ui")
+
+    //Quarkus JUnit5
+//    testImplementation("io.quarkus:quarkus-junit5")
+
+    //Rest Assured
+//    testImplementation("io.quarkus:quarkus-rest-assured")
+
+
 }
 
 tasks.test {
@@ -109,4 +124,10 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-parameters")
 }
+
+//ESTO ES PARA PRUEBAS NO SE SI ES NECESARIO PERO LO DEJO PARA EL Open api
+//tasks.test {
+//    useJUnitPlatform()
+//    systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
+//}
 

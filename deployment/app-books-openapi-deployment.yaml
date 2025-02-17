@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-authors # Nombre del deployment
+  name: app-books # Nombre del deployment
   labels:
-    app: app-authors
+    app: app-books
 spec:
   replicas: 1 # Número de replicas
   selector:
     matchLabels:
-      app: app-authors # Nombre del deployment en este caso el nombre de la app
+      app: app-books # Nombre del deployment en este caso el nombre de la app
   template:
     metadata:
-      name: app-authors
+      name: app-books
       labels:
-        app: app-authors # Nombre del deployment en este caso el nombre de la app
+        app: app-books # Nombre del deployment en este caso el nombre de la app
     spec:
       restartPolicy: Always
       containers:
-      - name: app-authors # Nombre del contenedor
-        #image: app-authors # Imagen del contenedor puede ser con dockerhub o con un registry privado
-        image: docker.io/alulest/app-authors:latest
+      - name: app-books # Nombre del contenedor
+        image: docker.io/alulest/app-books:latest # Imagen del contenedor puede ser con dockerhub o con un registry privado
+        #image: docker.io/dbllumiquinga/app-authors:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080 # Puerto del contenedor
@@ -41,7 +41,16 @@ spec:
             value: consul
           - name: CONSUL_PORT
             value: "8500"
-
+          - name: QUARKUS_SMALLRYE_OPENAPI_ENABLE
+            value: "true"
+          - name: QUARKUS_SMALLRYE_OPENAPI_ALWAYS_INCLUDE
+            value: "true"
+          #          - name: QUARKUS_SMALLRYE_OPENAPI_PATH
+          #            value: "/q/openapi2"
+          - name: QUARKUS_SWAGGER_UI_ALWAYS_INCLUDE
+            value: "true"
+          #          - name: QUARKUS_SWAGGER_UI_PATH
+          #            value: "/swagger-ui"
 
 
 #------- balanceo
@@ -49,26 +58,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-authors-service # Nombre del servicio
+  name: app-books-service # Nombre del servicio
 spec:
 #  type: ClusterIP
   type: LoadBalancer # en caso de usar por ejemplo azure
   selector:
-    app: app-authors
+    app: app-books
   ports:
     - protocol: TCP
       port: 8080 #este es el puerto en la maquina
       targetPort: 8080 #este en los pots
-
-#      -------------------------------
-#apiVersion: networking.k8s.io/v1
-#kind: Ingress
-#metadata:
-#  name: app-authors-service # Nombre del servicio
-#spec:
-#  rules:
-#    - http:
-#        - path: /app-authors
-#          backend:
-#            serviceName: app-authors
-#            servicePort: 8080

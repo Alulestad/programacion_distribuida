@@ -90,6 +90,20 @@ dependencies {
     //
 
 
+
+    //########################################### OpenAPI ###########################################
+    //Quarkus REST Jackson
+    implementation("io.quarkus:quarkus-rest-jackson")
+
+    //Quarkus SmallRye OpenAPI
+    implementation("io.quarkus:quarkus-smallrye-openapi")
+
+    //Quarkus JUnit5
+//    testImplementation("io.quarkus:quarkus-junit5")
+
+    //Rest Assured
+//    testImplementation("io.quarkus:quarkus-rest-assured")
+
 }
 
 tasks.test {

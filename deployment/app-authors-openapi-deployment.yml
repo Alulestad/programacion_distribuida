@@ -41,6 +41,17 @@ spec:
             value: consul
           - name: CONSUL_PORT
             value: "8500"
+          - name: QUARKUS_SMALLRYE_OPENAPI_ENABLE
+            value: "true"
+          - name: QUARKUS_SMALLRYE_OPENAPI_ALWAYS_INCLUDE
+            value: "true"
+#          - name: QUARKUS_SMALLRYE_OPENAPI_PATH
+#            value: "/q/openapi2"
+          - name: QUARKUS_SWAGGER_UI_ALWAYS_INCLUDE
+            value: "true"
+#          - name: QUARKUS_SWAGGER_UI_PATH
+#            value: "/swagger-ui"
+
 
 
 
@@ -52,7 +63,8 @@ metadata:
   name: app-authors-service # Nombre del servicio
 spec:
 #  type: ClusterIP
-  type: LoadBalancer # en caso de usar por ejemplo azure
+  type: NodePort
+#  type: LoadBalancer # en caso de usar por ejemplo azure
   selector:
     app: app-authors
   ports:

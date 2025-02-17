@@ -13,16 +13,23 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
+
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
 
 @Path("/books")
+@Tag(name = "Endpoint de books", description = "Endpoint para conusmir los recursos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped
-@Transactional
+//@Transactional
 
 public class BookRest {
     @Inject
@@ -38,6 +45,9 @@ public class BookRest {
 
 
     @GET
+    @Operation(summary = "Obtener la lista completa", description = "Devuelve la lista completa de books")
+    @APIResponse(responseCode = "200", description = "Obtencion exitoso de books")
+    @APIResponse(responseCode = "404", description = "No se pudo obtener los books")
     public List<BookDto> findAll() {
         //--version-1 -->original
         //return repository.findAll().list();
@@ -107,6 +117,9 @@ public class BookRest {
     }
 
     @GET
+    @Operation(summary = "Obtener la lista completa", description = "Devuelve la lista completa de books con author")
+    @APIResponse(responseCode = "200", description = "Obtencion exitoso de books")
+    @APIResponse(responseCode = "404", description = "No se pudo obtener los books")
     @Path("/todos")
     public List<BookDto> findAllBasic() {
         return repository.streamAll()
@@ -129,6 +142,10 @@ public class BookRest {
     }
 
     @GET
+    @Operation(summary = "Obtener books con manejo de errores",
+            description = "Devuelve books pero con falla en algunos intentos para probar la tolerancia a fallos.")
+    @APIResponse(responseCode = "200", description = "Obtención exitosa de books")
+    @APIResponse(responseCode = "500", description = "Error interno del servidor en intentos fallidos")
     @Path("/todosError")
     public List<BookDto> findAllError() {
         return repository.streamAll()
@@ -153,7 +170,18 @@ public class BookRest {
 
     @GET
     @Path("/{id}")
-    public Response findById(@PathParam("id") Integer id) {
+    @Operation(summary = "Obtener book", description = "Devuelve un book especofico")
+    @APIResponse(responseCode = "200", description = "Obtencion exitoso de book")
+    @APIResponse(responseCode = "404", description = "Book no encontrado")
+    public Response findById(
+            @Parameter(
+                    name = "id",
+                    description = "ID del book que se desea obtener.",
+                    required = true,
+                    in = ParameterIn.PATH,
+                    example = "1"
+            )
+            @PathParam("id") Integer id) {
         var obj = repository.findByIdOptional(id);
 
         if(obj.isEmpty()) {
@@ -165,7 +193,19 @@ public class BookRest {
 
     @GET
     @Path("/error/{id}")
-    public Response findByIdError(@PathParam("id") Integer id) {
+    @Operation(summary = "Obtener book con manejo de errores",
+            description = "Devuelve book pero con falla en algunos intentos para probar la tolerancia a fallos.")
+    @APIResponse(responseCode = "200", description = "Obtención exitosa de book")
+    @APIResponse(responseCode = "500", description = "Error interno del servidor en intentos fallidos")
+    public Response findByIdError(
+            @Parameter(
+                    name = "id",
+                    description = "ID del book que se desea obtener.",
+                    required = true,
+                    in = ParameterIn.PATH,
+                    example = "1"
+            )
+            @PathParam("id") Integer id) {
         var obj = repository.findByIdOptional(id);
 
         if(obj.isEmpty()) {
@@ -189,7 +229,23 @@ public class BookRest {
     }
 
     @POST
-    public Response create(Book book) {
+    @Operation(summary = "Crear un nuevo book", description = "Crea un nuevo book en el sistema.")
+    @APIResponse(responseCode = "201", description = "Book creado exitosamente")
+    @APIResponse(responseCode = "500", description = "Error interno del servidor al crear el book")
+    public Response create(
+            @Parameter(
+                    name = "book",
+                    description = "Objeto book que representa el book a crear.",
+                    required = true,
+                    example = "{\n" +
+                            "  \"isbn\": \"123456789\",\n" +
+                            "  \"title\": \"El libro\",\n" +
+                            "  \"price\": 100.0,\n" +
+                            "  \"idAutor\": 1\n" +
+                            "}"
+
+            )
+            Book book) {
 
         try {
             repository.persist(book);
@@ -202,6 +258,27 @@ public class BookRest {
 
     @PUT
     @Path("/{id}")
+    @Operation(summary = "Actualizar un book", description = "Actualiza los datos de un book existente.")
+    @APIResponse(responseCode = "200", description = "book actualizado exitosamente")
+    @APIResponse(responseCode = "404", description = "book no encontrado")
+    @Parameter(
+            name = "id",
+            description = "ID del book que se desea actualizar.",
+            required = true,
+            in = ParameterIn.PATH,
+            example = "1"
+    )
+    @Parameter(
+            name = "book",
+            description = "Objeto Book con los datos actualizados del book.",
+            required = true,
+            example = "{\n" +
+                    "  \"isbn\": \"123456789\",\n" +
+                    "  \"title\": \"El libro\",\n" +
+                    "  \"price\": 100.0,\n" +
+                    "  \"idAutor\": 1\n" +
+                    "}"
+    )
     public Response update(@PathParam("id") Integer id, Book book) {
         var obj = repository.findByIdOptional(id);
         if(obj.isEmpty()) {
@@ -214,6 +291,16 @@ public class BookRest {
 
     @DELETE
     @Path("/{id}")
+    @Operation(summary = "Eliminar un book", description = "Elimina un book existente por su ID.")
+    @APIResponse(responseCode = "200", description = "Book eliminado exitosamente")
+    @APIResponse(responseCode = "404", description = "Book no encontrado")
+    @Parameter(
+            name = "id",
+            description = "ID del book que se desea eliminar.",
+            required = true,
+            in = ParameterIn.PATH,
+            example = "1"
+    )
     public Response delete(@PathParam("id") Integer id) {
         var obj = repository.findByIdOptional(id);
         if(obj.isEmpty()) {

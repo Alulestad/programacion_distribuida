@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-books-deployment # Nombre del deployment
+  name: app-books # Nombre del deployment
   labels:
     app: app-books
 spec:
@@ -28,7 +28,7 @@ spec:
         env:
           - name: QUARKUS_DATASOURCE_JDBC_URL
 #            value: jdbc:postgresql://dbllumiquinga.postgres.database.azure.com:5432/postgres
-            value: jdbc:postgresql://dbllumiquinga-pgserver.postgres.database.azure.com:5432/postgres
+            value: jdbc:postgresql://dbllumiquinga-pgserver.postgres.database.azure.com:5432/distribuida
           - name: QUARKUS_DATASOURCE_USERNAME
 #            value: distribuida
             value: distribuida
@@ -41,12 +41,6 @@ spec:
             value: consul
           - name: CONSUL_PORT
             value: "8500"
-          - name: QUARKUS_HTTP_CORS
-            value: "true"
-          - name: QUARKUS_HTTP_CORS_ORIGIN
-            value: ".*"
-          - name: QUARKUS_HTTP_CORS_METHODS
-            value: "GET,POST,PUT,DELETE"
 
 
 #------- balanceo
@@ -56,8 +50,8 @@ kind: Service
 metadata:
   name: app-books-service # Nombre del servicio
 spec:
-  type: ClusterIP
-#  type: LoadBalancer # en caso de usar por ejemplo azure
+#  type: ClusterIP
+  type: LoadBalancer # en caso de usar por ejemplo azure
   selector:
     app: app-books
   ports:
